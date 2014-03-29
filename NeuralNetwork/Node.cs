@@ -1,15 +1,18 @@
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 namespace NeuralNetwork
 {
-    public class Node
+    internal class Node
     {
         private readonly ActivationFunction _activationFunction;
-        private readonly List<Connection> _inConnections = new List<Connection>();
-        private readonly List<Connection> _errConnections = new List<Connection>();
+        private readonly List<Connection> _parentConnections = new List<Connection>();
+        private readonly List<Connection> _childConnections = new List<Connection>();
 
         protected double State;
+        protected double Delta;
+
         public double Error { get; set; }
 
         public double GetState()
@@ -27,7 +30,7 @@ namespace NeuralNetwork
         /// <returns>state</returns>
         public virtual double CalculateState()
         {
-            State = _activationFunction(WeightFunction(_inConnections));
+            State = _activationFunction(WeightFunction(_parentConnections));
             return State;
         }
 
@@ -35,27 +38,27 @@ namespace NeuralNetwork
         /// Add connection (link to inputNode node)
         /// </summary>
         /// <param name="con">TBA connection</param>
-        private void AddInConnection(Connection con)
+        private void AddParentConnection(Connection con)
         {
-            _inConnections.Add(con);
+            _parentConnections.Add(con);
         }
 
-        private void AddOutConnection(Connection con)
+        private void AddChildConnection(Connection con)
         {
-            _errConnections.Add(con);
+            _childConnections.Add(con);
         }
 
         /// <summary>
         /// Connects two nodes
         /// </summary>
-        /// <param name="outputNode">node that would be connected with forward connection</param>
-        /// <param name="inputNode">node that would be connected with reverse connection (usually it is inputNode node)</param>
+        /// <param name="parentNode">node that would be connected with reverse connection (usually it is inputNode node)</param>
+        /// <param name="childNode">node that would be connected with forward connection</param>
         /// <param name="weight">weight of a connection</param>
-        public static void Connect(Node outputNode, Node inputNode, double weight)
+        public static void Connect(Node parentNode, Node childNode, double weight)
         {
-            var connection = new Connection(inputNode, outputNode, weight);
-            outputNode.AddInConnection(connection);
-            inputNode.AddOutConnection(connection);
+            var connection = new Connection(parentNode, childNode, weight);
+            childNode.AddParentConnection(connection); //в inConnections надо смотреть на parentnode
+            parentNode.AddChildConnection(connection); //в outConnections надо смотроеть на childnode
         }
 
         /// <summary>
@@ -63,24 +66,26 @@ namespace NeuralNetwork
         /// </summary>
         private static double WeightFunction(IEnumerable<Connection> connections)
         {
-            return connections.Sum(conn => conn.Weight*conn.InputNode.CalculateState());
+            return connections.Sum(conn => conn.Weight*conn.ParentNode.CalculateState());
+        }
+
+        public void CalculateDelta(Func<double, double> derivative)
+        {
+            Delta = derivative(State) * Error;
         }
 
         public void CalculateError()
         {
-            foreach (var errConnection in _errConnections)
-            {
-                var inputNode = errConnection.InputNode;
-                inputNode.Error = Error*errConnection.Weight*inputNode.State*
-                                                (1 - inputNode.State);
-            }
+            Error = _childConnections.Select(connection => connection.ChildNode.Delta * connection.Weight).Sum();
         }
 
-        public void Reweight(double deltaWeight)
+        public void ReweightRecursively(double learningCoef)
         {
-            foreach (var connection in _inConnections)
+            foreach (var connection in _parentConnections)
             {
-                connection.Weight += deltaWeight;
+                //connection.ParentNode.
+                connection.Weight += learningCoef * connection.ParentNode.State * Delta;
+                connection.ParentNode.ReweightRecursively(learningCoef);
             }
         }
     }

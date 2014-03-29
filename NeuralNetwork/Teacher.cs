@@ -19,18 +19,23 @@ namespace NeuralNetwork
 
         public void Train()
         {
-            foreach (KnownPrecedent precedent in _trainingSet)
+            for (int i = 0; i < 10000; i++)
             {
-                for (int i = 0; i < 1000; i++)
+                foreach (KnownPrecedent precedent in _trainingSet)
                 {
+
+                    //Console.WriteLine("actual");
                     ICollection<double> actual = _network.Run(precedent.ObjectFeatures);
+                    //actual.ToList().ForEach(Console.WriteLine);
+                    //Console.WriteLine("expected");
                     ICollection<double> expected = precedent.SupervisorySignal;
+                    //expected.ToList().ForEach(Console.WriteLine);
+                    //Console.WriteLine("error per output node");
                     ICollection<double> networkError = GetNetworkError(actual, expected);
+                    //networkError.ToList().ForEach(Console.WriteLine);
                     _network.ReweightAllLayers(networkError, precedent.ObjectFeatures, learningCoef);
                 }
             }
-            var collection = _network.Run(new[] { 0.0, 1.0 }.ToList());
-            collection.ToList().ForEach(Console.WriteLine);
         }
 
         private static ICollection<double> GetNetworkError(ICollection<double> actual, ICollection<double> expected)
@@ -38,8 +43,8 @@ namespace NeuralNetwork
             if (actual.Count != expected.Count)
                 throw new ArgumentException("actual feature size is not equal to expected size");
 
-            return actual.Zip(expected, (d, d1) => new {actual = d, expected = d1})
-                .Select(z => (z.expected - z.actual)*z.actual*(1 - z.actual))
+            return actual.Zip(expected, (d, d1) => new { actual = d, expected = d1 })
+                .Select(z => (z.expected - z.actual))
                 .ToList();
         }
     }

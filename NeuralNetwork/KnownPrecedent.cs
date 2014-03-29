@@ -2,7 +2,7 @@
 
 namespace NeuralNetwork
 {
-    public struct KnownPrecedent
+    internal struct KnownPrecedent
     {
         public List<double> ObjectFeatures;
         public List<double> SupervisorySignal;

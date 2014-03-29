@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace NeuralNetwork
 {
-    public class SenseNode : Node
+    internal class SenseNode : Node
     {
         /// <summary>
         ///     Sense node, no connections

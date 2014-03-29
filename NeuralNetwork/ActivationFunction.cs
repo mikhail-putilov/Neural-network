@@ -1,4 +1,4 @@
 ﻿namespace NeuralNetwork
 {
-    public delegate double ActivationFunction(double net);
+    internal delegate double ActivationFunction(double net);
 }
