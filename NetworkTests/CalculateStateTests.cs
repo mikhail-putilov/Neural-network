@@ -77,9 +77,9 @@ namespace NetworkTests
             Node.Connect(output, node1, 4);
             Node.Connect(output, node2, 5);
 
-            const double node1output = (1.0*2.0)*6.0;
-            const double node2output = (1.0*3.0)*7.0;
-            const double outputNodeoutput = node1output*4.0 + node2output*5.0;
+            const double node1Output = (1.0*2.0)*6.0;
+            const double node2Output = (1.0*3.0)*7.0;
+            const double outputNodeoutput = node1Output*4.0 + node2Output*5.0;
 
             Assert.IsTrue(Math.Abs(output.CalculateState() - outputNodeoutput) < 0.001);
         }

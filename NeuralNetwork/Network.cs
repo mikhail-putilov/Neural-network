@@ -3,35 +3,48 @@ using System.Linq;
 
 namespace NeuralNetwork
 {
-    internal class Network
+    public class Network
     {
-        private readonly SenseLayer _senseLayer;
-        private readonly List<Layer> _layers;
-        private readonly Layer _endLayer;
+        private readonly SenseLayer senseLayer;
+        private readonly List<Layer> layers;
+        private readonly Layer endLayer;
+
+        public static Network PerceptronNetwork
+        {
+            get
+            {
+                var senseLayer = new SenseLayer(size: 1);
+                var mainLayer = new Layer(numberOfNodes: 1, func: net => net);
+                mainLayer.FullConnectionWith(senseLayer);
+                var outLayer = new Layer(numberOfNodes: 1, func: net => net);
+                outLayer.FullConnectionWith(mainLayer);
+                return new Network(senseLayer, mainLayer, outLayer);
+            }
+        }
 
         public Network(SenseLayer senseLayer, params Layer[] layers)
         {
-            _senseLayer = senseLayer;
-            _layers = layers.Take(layers.Length - 1).ToList();
-            _endLayer = layers.Last();
+            this.senseLayer = senseLayer;
+            this.layers = layers.Take(layers.Length - 1).ToList();
+            endLayer = layers.Last();
         }
 
         public ICollection<double> Run(List<double> objectFeatures)
         {
-            _senseLayer.SetInput(objectFeatures);
-            return _endLayer.CalculateStates();
+            senseLayer.SetInput(objectFeatures);
+            return endLayer.CalculateStates();
         }
 
         public void ReweightAllLayers(ICollection<double> error, ICollection<double> objectFeatures, double learningCoef)
         {
-            _endLayer.CalculateOutputError(error);
-            for (int i = _layers.Count - 1; i >= 0; i--)
+            endLayer.CalculateOutputError(error);
+            for (int i = layers.Count - 1; i >= 0; i--)
             {
-                var layer = _layers[i];
+                var layer = layers[i];
                 layer.CalculateError();
             }
 
-            _endLayer.ReweightRecursively(learningCoef);
+            endLayer.ReweightRecursively(learningCoef);
         }
     }
 }

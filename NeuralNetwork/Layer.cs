@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace NeuralNetwork
 {
-    internal class Layer
+    public class Layer
     {
         private readonly List<Node> _nodes = new List<Node>();
 

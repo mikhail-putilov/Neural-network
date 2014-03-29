@@ -4,7 +4,7 @@ using System;
 
 namespace NeuralNetwork
 {
-    internal class Node
+    public class Node
     {
         private readonly ActivationFunction _activationFunction;
         private readonly List<Connection> _parentConnections = new List<Connection>();

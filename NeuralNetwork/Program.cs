@@ -14,7 +14,7 @@ namespace NeuralNetwork
 
         private static void Main(string[] args)
         {
-            var network = TestNetworkBuilder();
+            var network = Network.PerceptronNetwork;
             try
             {
                 var precedents = LoadPrecedencesFromFile(FileData);
@@ -76,16 +76,6 @@ namespace NeuralNetwork
             {
                 throw new FormatException("Give file has corrupted indicator of the output signal size", e);
             }
-        }
-
-        private static Network TestNetworkBuilder()
-        {
-            var senseLayer = new SenseLayer(size: 1);
-            var mainLayer = new Layer(numberOfNodes: 2, func: net => net);
-            mainLayer.FullConnectionWith(senseLayer);
-            var outLayer = new Layer(numberOfNodes: 1, func: net => net);
-            outLayer.FullConnectionWith(mainLayer);
-            return new Network(senseLayer, mainLayer, outLayer);
         }
     }
 }

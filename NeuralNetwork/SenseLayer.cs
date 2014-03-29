@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace NeuralNetwork
 {
-    internal class SenseLayer : Layer
+    public class SenseLayer : Layer
     {
         public SenseLayer(int size)
         {
