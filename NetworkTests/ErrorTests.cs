@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NeuralNetwork;
@@ -11,13 +12,16 @@ namespace NetworkTests
     [TestClass]
     public class ErrorTests
     {
-        private readonly Layer outputLayer;
+        private readonly Layer oLayer;
         private readonly SenseLayer sLayer;
+        private readonly Network network;
 
         public ErrorTests()
         {
-            sLayer = new SenseLayer(1);
-            outputLayer = new Layer(3, e => e*4);
+            sLayer = new SenseLayer(size: 1);
+            oLayer = new Layer(size: 1, func: e => e);
+            Node.Connect(sLayer.Nodes[0], oLayer.Nodes[0], 2);
+            network = new Network(sLayer, oLayer);
         }
 
         /// <summary>
@@ -49,18 +53,23 @@ namespace NetworkTests
         //
 
         #endregion
-
+        //todo: not done
         [TestMethod]
         public void TestMethod1()
         {
-            sLayer.SetInput(new[] {1.0});
-            Node.Connect(outputLayer.Nodes[0], sLayer.Nodes[0], 2.0);
-            Node.Connect(outputLayer.Nodes[1], sLayer.Nodes[0], 3.0);
-            Node.Connect(outputLayer.Nodes[2], sLayer.Nodes[0], 4.0);
-
-            var net = new Network(sLayer, outputLayer);
-            ICollection<double> actual = net.Run(new[] {2.0}.ToList());
-            CollectionAssert.AreEquivalent(new[] {2.0*2.0*4.0, 3.0*2.0*4.0, 4.0*2.0*4.0}, actual.ToList());
+            for (int i = 0; i < 5; ++i)
+            {
+                /**
+             * graph:
+             * s1 -- 2.0 -- o1
+             */
+                var objectFeatures = new[] {1.0};
+                ICollection<double> actual = network.Run(objectFeatures);
+                ICollection<double> expected = new[] {1.0};
+                network.BackPropagation(actual.Zip(expected, (a, e) => e - a).ToList(), objectFeatures,
+                    learningCoef: 0.1);
+                Console.Out.WriteLine(oLayer.Nodes[0].Delta);
+            }
         }
     }
 }

@@ -9,72 +9,62 @@ namespace NeuralNetwork
 {
     public static class Program
     {
-        //private const string FileData = @"..\..\precedences.csv";
-        private const string FileData = @"..\..\simple.csv";
+        private const string FileDataXOR = @"..\..\XorPrecedences.csv";
+        private const string FileDataNegation = @"..\..\NegationPrecedences.csv";
 
         private static void Main(string[] args)
         {
-            var network = Network.PerceptronNetwork;
+            XOR();
+//            Negation();
+        }
+
+        private static void Negation()
+        {
+            var network = Network.RepeaterNetwork;
+            
+            var precedents = FileManager.LoadPrecedencesFromFile(FileDataNegation);
+            var teacher = new Teacher(network, precedents);
+            teacher.Train(10000);
+            ICollection<double> result = network.Run(new[] { 1.0 });
+            Console.Write("1.0 unrepeat:\t");
+            result.ToList().ForEach(d => Console.Write("{0:F} ", d));
+
+            Console.WriteLine();
+
+            ICollection<double> result2 = network.Run(new[] { 0.0 });
+            Console.Write("0.0 unrepeat:\t");
+            result2.ToList().ForEach(d => Console.Write("{0:F} ", d));
+            Console.WriteLine();
+        }
+
+        private static void XOR()
+        {
+            var network = Network.XORNetwork;
             try
             {
-                var precedents = LoadPrecedencesFromFile(FileData);
+                var precedents = FileManager.LoadPrecedencesFromFile(FileDataXOR);
                 var teacher = new Teacher(network, precedents);
-                teacher.Train();
-                ICollection<double> output = network.Run(new [] {1.0}.ToList());
-                output.ToList().ForEach(d => Console.Write("{0} ", d));
+                teacher.Train(100000);
+                ICollection<double> result = network.Run(new[] {1.0, 0.0});
+                Console.Write("1.0 xor 0.0:\t");
+                result.ToList().ForEach(d => Console.Write("{0:F} ", d));
+                Console.WriteLine();
+                ICollection<double> result2 = network.Run(new[] {0.0, 1.0});
+                Console.Write("0.0 xor 1.0:\t");
+                result2.ToList().ForEach(d => Console.Write("{0:F} ", d));
+                Console.WriteLine();
+                ICollection<double> result3 = network.Run(new[] {1.0, 1.0});
+                Console.Write("1.0 xor 1.0:\t");
+                result3.ToList().ForEach(d => Console.Write("{0:F} ", d));
+                Console.WriteLine();
+                ICollection<double> result4 = network.Run(new[] {0.0, 0.0});
+                Console.Write("0.0 xor 0.0:\t");
+                result4.ToList().ForEach(d => Console.Write("{0:F} ", d));
+                Console.WriteLine();
             }
             catch (FileNotFoundException e)
             {
                 Console.WriteLine(e.Message);
-            }
-        }
-
-        private static ICollection<KnownPrecedent> LoadPrecedencesFromFile(string filename)
-        {
-            var precedences = new List<KnownPrecedent>();
-            using (TextReader tr = new StreamReader(filename))
-            {
-                string line;
-                var outputSignalSize = GetOutputSignalSize(tr);
-                while ((line = tr.ReadLine()) != null)
-                {
-                    var precedentSplit = PrecedentSplitAndCheck(line);
-
-                    var outputSignal = precedentSplit.Take(outputSignalSize).Select(d => Convert.ToDouble(d, CultureInfo.InvariantCulture)).ToList();
-                    var features = precedentSplit.Take(precedentSplit.Length - 1).Select(d => Convert.ToDouble(d, CultureInfo.InvariantCulture)).ToList();
-                    
-                    precedences.Add(new KnownPrecedent{ObjectFeatures = features, SupervisorySignal = outputSignal});
-                }
-            }
-            return precedences;
-        }
-
-        private static string[] PrecedentSplitAndCheck(string line)
-        {
-            string[] precedentSplit = line.Split(',');
-            if (precedentSplit.Length < 2)
-            {
-                throw new FormatException(
-                    string.Format("line: \"{0}\" must be at least 2 items length (1 stands for input, another for output)", line));
-            }
-            return precedentSplit;
-        }
-
-        private static int GetOutputSignalSize(TextReader tr)
-        {
-            string line = tr.ReadLine();
-            if (line == null)
-                throw new FormatException("Given file has no indicator of the output signal size");
-            try
-            {
-                int size = Convert.ToInt32(line);
-                if (size > 0)
-                    return size;
-                throw new FormatException("Output signal size must be > 0");
-            }
-            catch (FormatException e)
-            {
-                throw new FormatException("Give file has corrupted indicator of the output signal size", e);
             }
         }
     }

@@ -1,41 +1,48 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net.Mime;
+using System.Text;
+using System.Xml.Schema;
 
 namespace NeuralNetwork
 {
     internal class Teacher
     {
-        private static double learningCoef = 0.1;
-        private static double EpsilonTraining = 0.1;
-        private readonly Network _network;
-        private readonly ICollection<KnownPrecedent> _trainingSet;
+        private const double learningCoef = 0.1;
+        private static double EpsilonTraining = 0.001;
+        private readonly Network network;
+        private readonly ICollection<KnownPrecedent> trainingSet;
 
         public Teacher(Network network, ICollection<KnownPrecedent> trainingSet)
         {
-            _network = network;
-            _trainingSet = trainingSet;
+            this.network = network;
+            this.trainingSet = trainingSet;
         }
 
-        public void Train()
+        public void Train(int maxIterations)
         {
-            for (int i = 0; i < 10000; i++)
+            for (int i = 0; i < maxIterations; i++)
             {
-                foreach (KnownPrecedent precedent in _trainingSet)
+                var errors = new List<ICollection<double>>();
+                foreach (KnownPrecedent precedent in trainingSet)
                 {
-
-                    //Console.WriteLine("actual");
-                    ICollection<double> actual = _network.Run(precedent.ObjectFeatures);
-                    //actual.ToList().ForEach(Console.WriteLine);
-                    //Console.WriteLine("expected");
+                    ICollection<double> actual = network.Run(precedent.ObjectFeatures);
                     ICollection<double> expected = precedent.SupervisorySignal;
-                    //expected.ToList().ForEach(Console.WriteLine);
-                    //Console.WriteLine("error per output node");
                     ICollection<double> networkError = GetNetworkError(actual, expected);
-                    //networkError.ToList().ForEach(Console.WriteLine);
-                    _network.ReweightAllLayers(networkError, precedent.ObjectFeatures, learningCoef);
+                    errors.Add(networkError);
+                    network.BackPropagation(networkError, precedent.ObjectFeatures, learningCoef);
                 }
+                if (doesConverge(errors))
+                    break;
             }
+        }
+
+        private bool doesConverge(List<ICollection<double>> errors)
+        {
+            double medium = errors.Select(doubles => doubles.Sum()/(double) doubles.Count).Sum()/errors.Count;
+            return medium < EpsilonTraining;
         }
 
         private static ICollection<double> GetNetworkError(ICollection<double> actual, ICollection<double> expected)
@@ -43,9 +50,7 @@ namespace NeuralNetwork
             if (actual.Count != expected.Count)
                 throw new ArgumentException("actual feature size is not equal to expected size");
 
-            return actual.Zip(expected, (d, d1) => new { actual = d, expected = d1 })
-                .Select(z => (z.expected - z.actual))
-                .ToList();
+            return actual.Zip(expected, (a, e) => e - a).ToList();
         }
     }
 }

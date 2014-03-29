@@ -6,13 +6,13 @@ namespace NeuralNetwork
 {
     public class Layer
     {
-        private readonly List<Node> _nodes = new List<Node>();
+        private readonly List<Node> nodes = new List<Node>();
 
-        public Layer(int numberOfNodes, ActivationFunction func)
+        public Layer(int size, ActivationFunction func)
         {
-            for (int i = 0; i < numberOfNodes; i++)
+            for (int i = 0; i < size; i++)
             {
-                _nodes.Add(new Node(func));
+                nodes.Add(new Node(func));
             }
         }
 
@@ -27,12 +27,12 @@ namespace NeuralNetwork
 
         public IList<Node> Nodes
         {
-            get { return _nodes; }
+            get { return nodes; }
         }
 
         public ICollection<double> CalculateStates()
         {
-            return _nodes.Select(node => node.CalculateState()).ToList();
+            return nodes.Select(node => node.CalculateOutput()).ToList();
         }
 
         /// <summary>
@@ -42,38 +42,40 @@ namespace NeuralNetwork
         public void FullConnectionWith(Layer inputLayer)
         {
             var random = new Random((int) DateTime.Now.ToBinary());
-            foreach (Node parentNode in inputLayer._nodes)
+            foreach (Node parentNode in inputLayer.nodes)
             {
-                foreach (Node childNode in _nodes)
+                foreach (Node childNode in nodes)
                 {
                     Node.Connect(parentNode, childNode, random.NextDouble() - 0.5);
                 }
             }
         }
 
-        public void CalculateOutputError(IEnumerable<double> error)
+        public void SetDeltaForEndLayer(IEnumerable<double> error)
         {
-            //apply foreach error state
-            error.Zip(_nodes, (err, node) => new {err, node}).ToList().ForEach(obj => obj.node.Error = obj.err);
+            //set predelta for each output node 
+            error.Zip(nodes, (err, node) => new {err, node}).ToList()
+                .ForEach(obj => obj.node.Predelta = obj.err);
+
             //calculate delta
-            foreach (var node in _nodes)
+            foreach (var node in nodes)
             {
-                node.CalculateDelta(o => -o*(1 - o));
+                node.CalculateDelta(o => - o * (1 - o));
             }
         }
 
-        public void CalculateError()
+        public void CalculateDelta()
         {
-            foreach (var node in _nodes)
+            foreach (var node in nodes)
             {
-                node.CalculateError();
-                node.CalculateDelta(o => o * (1 - o));
+                node.CalculatePredeltaForHidden();
+                node.CalculateDelta(o =>  o * (1 - o));
             }
         }
 
         public void ReweightRecursively(double learningCoef)
         {
-            foreach (var node in _nodes)
+            foreach (var node in nodes)
             {
                 node.ReweightRecursively(learningCoef);
             }

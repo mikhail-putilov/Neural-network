@@ -15,7 +15,7 @@ namespace NetworkTests
             var node = new Node(e => e);
 
             Node.Connect(node, snode, 1);
-            Assert.IsTrue(Math.Abs(node.CalculateState() - 0.0) < 0.001);
+            Assert.IsTrue(Math.Abs(node.CalculateOutput() - 0.0) < 0.001);
         }
 
         [TestMethod]
@@ -26,7 +26,7 @@ namespace NetworkTests
             var node = new Node(e => e);
 
             Node.Connect(node, snode, 4);
-            Assert.IsTrue(Math.Abs(node.CalculateState() - 8.0) < 0.001);
+            Assert.IsTrue(Math.Abs(node.CalculateOutput() - 8.0) < 0.001);
         }
 
         [TestMethod]
@@ -42,7 +42,7 @@ namespace NetworkTests
 
             Node.Connect(node, snode1, 4);
             Node.Connect(node, snode2, 3);
-            Assert.IsTrue(Math.Abs(node.CalculateState() - (4.0*2.0 + 3.0*3.0)) < 0.001);
+            Assert.IsTrue(Math.Abs(node.CalculateOutput() - (4.0*2.0 + 3.0*3.0)) < 0.001);
         }
 
         [TestMethod]
@@ -57,7 +57,7 @@ namespace NetworkTests
 
             Node.Connect(node1, snode1, 4);
             Node.Connect(node2, node1, 3);
-            Assert.IsTrue(Math.Abs(node2.CalculateState() - (2.0 * 4.0 * 3.0)) < 0.001);
+            Assert.IsTrue(Math.Abs(node2.CalculateOutput() - (2.0 * 4.0 * 3.0)) < 0.001);
         }
 
         [TestMethod]
@@ -81,7 +81,7 @@ namespace NetworkTests
             const double node2Output = (1.0*3.0)*7.0;
             const double outputNodeoutput = node1Output*4.0 + node2Output*5.0;
 
-            Assert.IsTrue(Math.Abs(output.CalculateState() - outputNodeoutput) < 0.001);
+            Assert.IsTrue(Math.Abs(output.CalculateOutput() - outputNodeoutput) < 0.001);
         }
     }
 }

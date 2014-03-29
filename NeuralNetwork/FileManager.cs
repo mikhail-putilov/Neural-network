@@ -17,9 +17,15 @@ namespace NeuralNetwork
                 while ((line = tr.ReadLine()) != null)
                 {
                     var precedentSplit = PrecedentSplitAndCheck(line);
-
-                    var outputSignal = Enumerable.Take<string>(precedentSplit, outputSignalSize).Select(Convert.ToDouble).ToList();
-                    var features = Enumerable.Take<string>(precedentSplit, precedentSplit.Length - 1).Select(Convert.ToDouble).ToList();
+                    int featuresColumnSize = precedentSplit.Length - outputSignalSize;
+                    var outputSignal = precedentSplit.Skip(featuresColumnSize)
+                        .Take(outputSignalSize)
+                        .Select(Convert.ToDouble)
+                        .ToList();
+                    var features = precedentSplit
+                        .Take(featuresColumnSize)
+                        .Select(Convert.ToDouble)
+                        .ToList();
                     
                     precedences.Add(new KnownPrecedent{ObjectFeatures = features, SupervisorySignal = outputSignal});
                 }

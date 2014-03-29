@@ -6,32 +6,54 @@ namespace NeuralNetwork
 {
     public class Node
     {
-        private readonly ActivationFunction _activationFunction;
-        private readonly List<Connection> _parentConnections = new List<Connection>();
-        private readonly List<Connection> _childConnections = new List<Connection>();
+        private readonly ActivationFunction activationFunction;
+        private readonly List<Connection> parentConnections = new List<Connection>();
+        private readonly List<Connection> childConnections = new List<Connection>();
 
-        protected double State;
-        protected double Delta;
+        protected double Output;
+        /// <summary>
+        /// delta = Output*(1 - Output)(Predelta)
+        /// </summary>
+        private double delta;
 
-        public double Error { get; set; }
+        private double predelta;
 
-        public double GetState()
+        /// <summary>
+        /// For output layer: Predelta = (expected_output - Output)
+        /// For hidden layers: Predelta = sum for all childs (child.Delta * connection.Weight )
+        /// </summary>
+        public double Predelta
         {
-            return State;
+            get { return predelta; }
+            set { predelta = value; }
         }
+
+        /// <summary>
+        /// delta = Output*(1 - Output)(Predelta)
+        /// </summary>
+        public double Delta
+        {
+            get { return delta; }
+        }
+
+        public double CurrentOutput
+        {
+            get { return Output; }
+        }
+
         public Node(ActivationFunction activationFunction)
         {
-            this._activationFunction = activationFunction;
+            this.activationFunction = activationFunction;
         }
 
         /// <summary>
         /// Calculates and gets state of the node
         /// </summary>
         /// <returns>state</returns>
-        public virtual double CalculateState()
+        public virtual double CalculateOutput()
         {
-            State = _activationFunction(WeightFunction(_parentConnections));
-            return State;
+            Output = activationFunction(WeightFunctionParents(parentConnections));
+            return Output;
         }
 
         /// <summary>
@@ -40,12 +62,12 @@ namespace NeuralNetwork
         /// <param name="con">TBA connection</param>
         private void AddParentConnection(Connection con)
         {
-            _parentConnections.Add(con);
+            parentConnections.Add(con);
         }
 
         private void AddChildConnection(Connection con)
         {
-            _childConnections.Add(con);
+            childConnections.Add(con);
         }
 
         /// <summary>
@@ -62,29 +84,29 @@ namespace NeuralNetwork
         }
 
         /// <summary>
-        /// Linear combination of inConnections
+        /// Linear combination of parent nodes
         /// </summary>
-        private static double WeightFunction(IEnumerable<Connection> connections)
+        private static double WeightFunctionParents(IEnumerable<Connection> connections)
         {
-            return connections.Sum(conn => conn.Weight*conn.ParentNode.CalculateState());
+            return connections.Sum(conn => conn.Weight*conn.ParentNode.CalculateOutput());
         }
 
         public void CalculateDelta(Func<double, double> derivative)
         {
-            Delta = derivative(State) * Error;
+            delta = derivative(Output) * predelta;
         }
 
-        public void CalculateError()
+        public void CalculatePredeltaForHidden()
         {
-            Error = _childConnections.Select(connection => connection.ChildNode.Delta * connection.Weight).Sum();
+            predelta = childConnections.Select(connection => connection.ChildNode.delta * connection.Weight).Sum();
         }
 
         public void ReweightRecursively(double learningCoef)
         {
-            foreach (var connection in _parentConnections)
+            //from childs to parents
+            foreach (var connection in parentConnections)
             {
-                //connection.ParentNode.
-                connection.Weight += learningCoef * connection.ParentNode.State * Delta;
+                connection.Weight -= learningCoef * connection.ParentNode.Output * delta;
                 connection.ParentNode.ReweightRecursively(learningCoef);
             }
         }

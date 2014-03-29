@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -9,14 +10,27 @@ namespace NeuralNetwork
         private readonly List<Layer> layers;
         private readonly Layer endLayer;
 
-        public static Network PerceptronNetwork
+        public static Network XORNetwork
+        {
+            get
+            {
+                var senseLayer = new SenseLayer(size: 2);
+                var mainLayer = new Layer(size: 4, func: net => 1.0 / (1 + Math.Exp(-net)));
+                mainLayer.FullConnectionWith(senseLayer);
+                var outLayer = new Layer(size: 1, func: net => 1.0 / (1 + Math.Exp(-net)));
+                outLayer.FullConnectionWith(mainLayer);
+                return new Network(senseLayer, mainLayer, outLayer);
+            }
+        }
+
+        public static Network RepeaterNetwork
         {
             get
             {
                 var senseLayer = new SenseLayer(size: 1);
-                var mainLayer = new Layer(numberOfNodes: 1, func: net => net);
+                var mainLayer = new Layer(size: 4, func: net => 1.0 / (1 + Math.Exp(-net)));
                 mainLayer.FullConnectionWith(senseLayer);
-                var outLayer = new Layer(numberOfNodes: 1, func: net => net);
+                var outLayer = new Layer(size: 1, func: net => 1.0 / (1 + Math.Exp(-net)));
                 outLayer.FullConnectionWith(mainLayer);
                 return new Network(senseLayer, mainLayer, outLayer);
             }
@@ -29,19 +43,19 @@ namespace NeuralNetwork
             endLayer = layers.Last();
         }
 
-        public ICollection<double> Run(List<double> objectFeatures)
+        public ICollection<double> Run(ICollection<double> objectFeatures)
         {
             senseLayer.SetInput(objectFeatures);
             return endLayer.CalculateStates();
         }
 
-        public void ReweightAllLayers(ICollection<double> error, ICollection<double> objectFeatures, double learningCoef)
+        public void BackPropagation(ICollection<double> error, ICollection<double> objectFeatures, double learningCoef)
         {
-            endLayer.CalculateOutputError(error);
+            endLayer.SetDeltaForEndLayer(error);
             for (int i = layers.Count - 1; i >= 0; i--)
             {
                 var layer = layers[i];
-                layer.CalculateError();
+                layer.CalculateDelta();
             }
 
             endLayer.ReweightRecursively(learningCoef);

@@ -12,14 +12,14 @@ namespace NeuralNetwork
         {
         }
 
-        public override double CalculateState()
+        public override double CalculateOutput()
         {
-            return State;
+            return Output;
         }
 
         public void SetState(double state)
         {
-            base.State = state;
+            base.Output = state;
         }
     }
 }
