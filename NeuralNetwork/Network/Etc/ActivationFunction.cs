@@ -1,4 +1,4 @@
-﻿namespace NeuralNetwork
+﻿namespace NeuralNetwork.Network.Etc
 {
     public delegate double ActivationFunction(double net);
 }

@@ -1,4 +1,6 @@
-namespace NeuralNetwork
+using NeuralNetwork.Network.Nodes;
+
+namespace NeuralNetwork.Network.Etc
 {
     internal class Connection
     {

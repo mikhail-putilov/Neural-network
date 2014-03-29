@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Runtime.InteropServices;
-
-namespace NeuralNetwork
+﻿namespace NeuralNetwork.Network.Nodes
 {
     public class SenseNode : Node
     {
@@ -19,7 +16,7 @@ namespace NeuralNetwork
 
         public void SetState(double state)
         {
-            base.Output = state;
+            Output = state;
         }
     }
 }

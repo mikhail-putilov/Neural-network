@@ -2,11 +2,29 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using NeuralNetwork.Network.Training;
 
 namespace NeuralNetwork
 {
     public static class FileManager
     {
+        /// <summary>
+        /// 
+        /// Формат файла:<br/>
+        /// <code>количество_выходных_неиронов<br/>
+        ///вход_#1_неирона, вход_#2_неирона, ..., выход_#1_выходного_неирона, выход_#2_выходного_неирона, ...
+        /// <br/></code>
+        /// Все значения типа double.
+        /// Пример:
+        /// <example>
+        /// 2<br/>
+        /// 1,2,3,0,0<br/>
+        /// 3,5,1,1,1<br/>
+        /// Где в первом случае 0,0 это правильный ответ сети на вход 1,2,3 соответственно
+        /// </example>
+        /// </summary>
+        /// <param name="filename">Файл, хранящий прецеденты</param>
+        /// <returns>Коллекция прецедентов</returns>
         public static ICollection<KnownPrecedent> LoadPrecedencesFromFile(string filename)
         {
             var precedences = new List<KnownPrecedent>();

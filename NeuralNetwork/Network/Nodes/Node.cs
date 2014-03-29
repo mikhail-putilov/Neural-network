@@ -1,8 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System;
+using NeuralNetwork.Network.Etc;
 
-namespace NeuralNetwork
+namespace NeuralNetwork.Network.Nodes
 {
     public class Node
     {

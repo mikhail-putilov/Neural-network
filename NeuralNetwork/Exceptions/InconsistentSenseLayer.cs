@@ -1,6 +1,7 @@
 ﻿using System;
+using NeuralNetwork.Network.Nodes;
 
-namespace NeuralNetwork
+namespace NeuralNetwork.Exceptions
 {
     internal class InconsistentSenseLayer : Exception
     {

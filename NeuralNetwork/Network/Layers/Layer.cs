@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using NeuralNetwork.Network.Etc;
+using NeuralNetwork.Network.Nodes;
 
-namespace NeuralNetwork
+namespace NeuralNetwork.Network.Layers
 {
     public class Layer
     {

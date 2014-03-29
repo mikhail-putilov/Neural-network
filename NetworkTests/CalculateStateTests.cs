@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NeuralNetwork;
+using NeuralNetwork.Network.Nodes;
 
 namespace NetworkTests
 {
@@ -57,7 +57,7 @@ namespace NetworkTests
 
             Node.Connect(node1, snode1, 4);
             Node.Connect(node2, node1, 3);
-            Assert.IsTrue(Math.Abs(node2.CalculateOutput() - (2.0 * 4.0 * 3.0)) < 0.001);
+            Assert.IsTrue(Math.Abs(node2.CalculateOutput() - (2.0*4.0*3.0)) < 0.001);
         }
 
         [TestMethod]

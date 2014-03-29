@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NeuralNetwork;
+using NeuralNetwork.Network;
+using NeuralNetwork.Network.Layers;
+using NeuralNetwork.Network.Nodes;
 
 namespace NetworkTests
 {
@@ -12,14 +15,13 @@ namespace NetworkTests
     [TestClass]
     public class ErrorTests
     {
-        private readonly Layer oLayer;
-        private readonly SenseLayer sLayer;
         private readonly Network network;
+        private readonly Layer oLayer;
 
         public ErrorTests()
         {
-            sLayer = new SenseLayer(size: 1);
-            oLayer = new Layer(size: 1, func: e => e);
+            var sLayer = new SenseLayer(1);
+            oLayer = new Layer(1, e => e);
             Node.Connect(sLayer.Nodes[0], oLayer.Nodes[0], 2);
             network = new Network(sLayer, oLayer);
         }
@@ -53,6 +55,7 @@ namespace NetworkTests
         //
 
         #endregion
+
         //todo: not done
         [TestMethod]
         public void TestMethod1()
@@ -66,8 +69,7 @@ namespace NetworkTests
                 var objectFeatures = new[] {1.0};
                 ICollection<double> actual = network.Run(objectFeatures);
                 ICollection<double> expected = new[] {1.0};
-                network.BackPropagation(actual.Zip(expected, (a, e) => e - a).ToList(), objectFeatures,
-                    learningCoef: 0.1);
+                network.BackPropagation(actual.Zip(expected, (a, e) => e - a).ToList(), objectFeatures, 0.1);
                 Console.Out.WriteLine(oLayer.Nodes[0].Delta);
             }
         }

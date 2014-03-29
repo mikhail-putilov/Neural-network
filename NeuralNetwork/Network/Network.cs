@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using NeuralNetwork.Network.Layers;
 
-namespace NeuralNetwork
+namespace NeuralNetwork.Network
 {
     public class Network
     {

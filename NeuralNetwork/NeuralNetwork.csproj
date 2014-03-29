@@ -41,25 +41,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ActivationFunction.cs" />
-    <Compile Include="Connection.cs" />
+    <Compile Include="Network\Etc\ActivationFunction.cs" />
+    <Compile Include="Network\Etc\Connection.cs" />
     <Compile Include="FileManager.cs" />
-    <Compile Include="InconsistentSenseLayer.cs" />
-    <Compile Include="KnownPrecedent.cs" />
-    <Compile Include="Layer.cs" />
-    <Compile Include="Network.cs" />
-    <Compile Include="Node.cs" />
+    <Compile Include="Exceptions\InconsistentSenseLayer.cs" />
+    <Compile Include="Network\Training\KnownPrecedent.cs" />
+    <Compile Include="Network\Layers\Layer.cs" />
+    <Compile Include="Network\Network.cs" />
+    <Compile Include="Network\Nodes\Node.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SenseLayer.cs" />
-    <Compile Include="SenseNode.cs" />
-    <Compile Include="Teacher.cs" />
+    <Compile Include="Network\Layers\SenseLayer.cs" />
+    <Compile Include="Network\Nodes\SenseNode.cs" />
+    <Compile Include="Network\Training\Teacher.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="NegationPrecedences.csv" />
-    <None Include="XorPrecedences.csv" />
+    <None Include="Resources\NegationPrecedences.csv" />
+    <None Include="Resources\XorPrecedences.csv" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
