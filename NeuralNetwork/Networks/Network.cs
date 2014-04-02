@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using NeuralNetwork.Networks.Layers;
@@ -50,8 +51,10 @@ namespace NeuralNetwork.Networks
         /// </summary>
         /// <param name="error">Difference between actual and expected output of the network</param>
         /// <param name="learningCoef">learning coefficient, usually small number less than 1</param>
-        public virtual void Reweight(ICollection<double> error, double learningCoef)
+        public virtual void Reweight(ICollection<double> actual, ICollection<double> expected, double learningCoef)
         {
+            List<double> error = CalculateError(actual, expected);
+
             EndLayer.SetDeltaForEndLayer(error);
             for (int i = Layers.Count - 1; i >= 0; i--)
             {
@@ -60,6 +63,15 @@ namespace NeuralNetwork.Networks
             }
 
             EndLayer.ReweightRecursively(learningCoef);
+        }
+
+        private static List<double> CalculateError(ICollection<double> actual, ICollection<double> expected)
+        {
+            if (actual.Count != expected.Count)
+                throw new ArgumentException("actual feature size is not equal to expected size");
+
+            List<double> error = actual.Zip(expected, (a, e) => e - a).ToList();
+            return error;
         }
     }
 }

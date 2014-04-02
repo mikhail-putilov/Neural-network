@@ -45,6 +45,7 @@
     <Compile Include="Networks\Etc\Link.cs" />
     <Compile Include="FileManager.cs" />
     <Compile Include="Exceptions\InconsistentSenseLayer.cs" />
+    <Compile Include="Networks\KohonenNetwork.cs" />
     <Compile Include="Networks\Negation.cs" />
     <Compile Include="Networks\Training\KnownPrecedent.cs" />
     <Compile Include="Networks\Layers\Layer.cs" />
