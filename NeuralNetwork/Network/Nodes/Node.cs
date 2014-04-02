@@ -8,8 +8,8 @@ namespace NeuralNetwork.Network.Nodes
     public class Node
     {
         private readonly ActivationFunction activationFunction;
-        private readonly List<Connection> parentConnections = new List<Connection>();
-        private readonly List<Connection> childConnections = new List<Connection>();
+        private readonly List<Link> parentConnections = new List<Link>();
+        private readonly List<Link> childConnections = new List<Link>();
 
         protected double Output;
         /// <summary>
@@ -61,12 +61,12 @@ namespace NeuralNetwork.Network.Nodes
         /// Add connection (link to inputNode node)
         /// </summary>
         /// <param name="con">TBA connection</param>
-        private void AddParentConnection(Connection con)
+        private void AddParentConnection(Link con)
         {
             parentConnections.Add(con);
         }
 
-        private void AddChildConnection(Connection con)
+        private void AddChildConnection(Link con)
         {
             childConnections.Add(con);
         }
@@ -79,7 +79,7 @@ namespace NeuralNetwork.Network.Nodes
         /// <param name="weight">weight of a connection</param>
         public static void Connect(Node parentNode, Node childNode, double weight)
         {
-            var connection = new Connection(parentNode, childNode, weight);
+            var connection = new Link(parentNode, childNode, weight);
             childNode.AddParentConnection(connection); //в inConnections надо смотреть на parentnode
             parentNode.AddChildConnection(connection); //в outConnections надо смотроеть на childnode
         }
@@ -87,7 +87,7 @@ namespace NeuralNetwork.Network.Nodes
         /// <summary>
         /// Linear combination of parent nodes
         /// </summary>
-        private static double WeightFunctionParents(IEnumerable<Connection> connections)
+        private static double WeightFunctionParents(IEnumerable<Link> connections)
         {
             return connections.Sum(conn => conn.Weight*conn.ParentNode.CalculateOutput());
         }

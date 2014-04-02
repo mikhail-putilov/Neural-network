@@ -7,45 +7,53 @@ namespace NeuralNetwork.Network.Training
     internal class Teacher
     {
         private const double LearningCoef = 0.1;
-        private double epsilonTraining = 0.01;
-        private readonly Network network;
-        private readonly ICollection<KnownPrecedent> trainingSet;
+        private readonly Network _network;
+        private readonly ICollection<KnownPrecedent> _trainingSet;
+        private double _epsilonTraining = 0.01;
 
         public Teacher(Network network, ICollection<KnownPrecedent> trainingSet)
         {
-            this.network = network;
-            this.trainingSet = trainingSet;
+            _network = network;
+            _trainingSet = trainingSet;
+        }
+        /// <summary>
+        /// Resulting error must be less than this value, so typically leave it default (0.01)
+        /// </summary>
+        public double EpsilonTraining
+        {
+            get { return _epsilonTraining; }
+            set { _epsilonTraining = value; }
         }
 
         public void Train(int maxIterations, double epsilonTraining = 0.01)
         {
-            this.epsilonTraining = epsilonTraining;
+            EpsilonTraining = epsilonTraining;
             int i;
             double resultingError = double.PositiveInfinity;
             for (i = 0; i < maxIterations; i++)
             {
-                var errors = new List<double>(trainingSet.Count);
-                foreach (KnownPrecedent precedent in trainingSet)
+                var errors = new List<double>(_trainingSet.Count);
+                foreach (KnownPrecedent precedent in _trainingSet)
                 {
-                    ICollection<double> actual = network.Run(precedent.ObjectFeatures);
+                    ICollection<double> actual = _network.Run(precedent.ObjectFeatures);
                     ICollection<double> expected = precedent.SupervisorySignal;
                     ICollection<double> networkError = GetNetworkError(actual, expected);
                     //(cartesian normalization)^2 :
                     errors.Add(Math.Sqrt(networkError.Select(d => d*d).Sum()));
-                    network.BackPropagation(networkError, precedent.ObjectFeatures, LearningCoef);
+                    _network.BackPropagation(networkError, precedent.ObjectFeatures, LearningCoef);
                 }
 
                 resultingError = ResultingError(errors);
-                if (doesConverge(resultingError))
+                if (DoesConverge(resultingError))
                     break;
             }
             Console.Out.WriteLine("Converged at {0} iteration ({1} total precedents, resulting error: {2:P})", i + 1,
-                (i + 1)*trainingSet.Count, resultingError);
+                (i + 1)*_trainingSet.Count, resultingError);
         }
 
-        private bool doesConverge(double resultingError)
+        private bool DoesConverge(double resultingError)
         {
-            return resultingError < epsilonTraining;
+            return resultingError < EpsilonTraining;
         }
 
         private static double ResultingError(IEnumerable<double> errors)

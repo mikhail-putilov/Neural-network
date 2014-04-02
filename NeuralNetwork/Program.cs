@@ -23,7 +23,7 @@ namespace NeuralNetwork
             try
             {
                 ICollection<KnownPrecedent> precedents = FileManager.LoadPrecedencesFromFile(FileDataNegation);
-                var teacher = new Teacher(network, precedents);
+                var teacher = new Teacher(network, precedents) {EpsilonTraining = 0.01};
                 teacher.Train(MaxIterations);
                 ICollection<double> result = network.Run(new[] {1.0});
                 Console.Write("1.0 negate:\t");
