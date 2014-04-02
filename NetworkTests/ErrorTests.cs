@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NeuralNetwork;
 using NeuralNetwork.Network;
 using NeuralNetwork.Network.Layers;
 using NeuralNetwork.Network.Nodes;
@@ -15,15 +14,15 @@ namespace NetworkTests
     [TestClass]
     public class ErrorTests
     {
-        private readonly Network network;
-        private readonly Layer oLayer;
+        private readonly Network _network;
+        private readonly Layer _oLayer;
 
         public ErrorTests()
         {
             var sLayer = new SenseLayer(1);
-            oLayer = new Layer(1, e => e);
-            Node.Connect(sLayer.Nodes[0], oLayer.Nodes[0], 2);
-            network = new Network(sLayer, oLayer);
+            _oLayer = new Layer(1, e => e);
+            Node.Connect(sLayer.Nodes[0], _oLayer.Nodes[0], 2);
+            _network = new Network(sLayer, _oLayer);
         }
 
         /// <summary>
@@ -67,10 +66,10 @@ namespace NetworkTests
              * s1 -- 2.0 -- o1
              */
                 var objectFeatures = new[] {1.0};
-                ICollection<double> actual = network.Run(objectFeatures);
+                ICollection<double> actual = _network.Run(objectFeatures);
                 ICollection<double> expected = new[] {1.0};
-                network.BackPropagation(actual.Zip(expected, (a, e) => e - a).ToList(), objectFeatures, 0.1);
-                Console.Out.WriteLine(oLayer.Nodes[0].Delta);
+                _network.BackPropagation(actual.Zip(expected, (a, e) => e - a).ToList(), 0.1);
+                Console.Out.WriteLine(_oLayer.Nodes[0].Delta);
             }
         }
     }

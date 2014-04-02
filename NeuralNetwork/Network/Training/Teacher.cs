@@ -40,7 +40,7 @@ namespace NeuralNetwork.Network.Training
                     ICollection<double> networkError = GetNetworkError(actual, expected);
                     //(cartesian normalization)^2 :
                     errors.Add(Math.Sqrt(networkError.Select(d => d*d).Sum()));
-                    _network.BackPropagation(networkError, precedent.ObjectFeatures, LearningCoef);
+                    _network.BackPropagation(networkError, LearningCoef);
                 }
 
                 resultingError = ResultingError(errors);

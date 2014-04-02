@@ -2,9 +2,9 @@ using NeuralNetwork.Network.Nodes;
 
 namespace NeuralNetwork.Network.Etc
 {
-    internal class Connection
+    internal class Link
     {
-        public Connection(Node parentNode, Node childNode, double weight)
+        public Link(Node parentNode, Node childNode, double weight)
         {
             ChildNode = childNode;
             ParentNode = parentNode;
