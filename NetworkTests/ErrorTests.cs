@@ -68,7 +68,7 @@ namespace NetworkTests
                 var objectFeatures = new[] {1.0};
                 ICollection<double> actual = _network.Run(objectFeatures);
                 ICollection<double> expected = new[] {1.0};
-                _network.BackPropagation(actual.Zip(expected, (a, e) => e - a).ToList(), 0.1);
+                _network.Reweight(actual, expected, 0.1);
                 Console.Out.WriteLine(_oLayer.Nodes[0].Delta);
             }
         }

@@ -37,10 +37,10 @@ namespace NeuralNetwork.Networks.Training
                 {
                     ICollection<double> actual = _network.Run(precedent.ObjectFeatures);
                     ICollection<double> expected = precedent.SupervisorySignal;
-                    ICollection<double> networkError = GetNetworkError(actual, expected);
+                    var networkError = actual.Zip(expected, (a, e) => e - a);
                     //(cartesian normalization)^2 :
                     errors.Add(Math.Sqrt(networkError.Select(d => d*d).Sum()));
-                    _network.BackPropagation(networkError, LearningCoef);
+                    _network.Reweight(actual, expected, LearningCoef);
                 }
 
                 resultingError = ResultingError(errors);
@@ -62,12 +62,5 @@ namespace NeuralNetwork.Networks.Training
             return norm;
         }
 
-        private static ICollection<double> GetNetworkError(ICollection<double> actual, ICollection<double> expected)
-        {
-            if (actual.Count != expected.Count)
-                throw new ArgumentException("actual feature size is not equal to expected size");
-
-            return actual.Zip(expected, (a, e) => e - a).ToList();
-        }
     }
 }

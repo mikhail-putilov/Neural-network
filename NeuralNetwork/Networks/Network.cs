@@ -45,7 +45,12 @@ namespace NeuralNetwork.Networks
             return EndLayer.CalculateStates();
         }
 
-        public void BackPropagation(ICollection<double> error, double learningCoef)
+        /// <summary>
+        /// Standard rule is back propagation. May be overwritten
+        /// </summary>
+        /// <param name="error">Difference between actual and expected output of the network</param>
+        /// <param name="learningCoef">learning coefficient, usually small number less than 1</param>
+        public virtual void Reweight(ICollection<double> error, double learningCoef)
         {
             EndLayer.SetDeltaForEndLayer(error);
             for (int i = Layers.Count - 1; i >= 0; i--)
