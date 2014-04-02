@@ -1,21 +1,21 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using NeuralNetwork.Network.Etc;
+using NeuralNetwork.Networks.Etc;
 
-namespace NeuralNetwork.Network.Nodes
+namespace NeuralNetwork.Networks.Nodes
 {
     public class Node
     {
-        private readonly ActivationFunction activationFunction;
-        private readonly List<Link> parentLinks = new List<Link>();
-        private readonly List<Link> childLinks = new List<Link>();
+        private readonly ActivationFunction _activationFunction;
+        private readonly List<Link> _parentLinks = new List<Link>();
+        private readonly List<Link> _childLinks = new List<Link>();
 
         protected double Output;
         
-        private double delta;
+        private double _delta;
 
-        private double predelta;
+        private double _predelta;
 
         /// <summary>
         /// For output layer: Predelta = (expected_output - Output)
@@ -23,8 +23,8 @@ namespace NeuralNetwork.Network.Nodes
         /// </summary>
         public double Predelta
         {
-            get { return predelta; }
-            set { predelta = value; }
+            get { return _predelta; }
+            set { _predelta = value; }
         }
 
         /// <summary>
@@ -32,7 +32,7 @@ namespace NeuralNetwork.Network.Nodes
         /// </summary>
         public double Delta
         {
-            get { return delta; }
+            get { return _delta; }
         }
 
         public double CurrentOutput
@@ -42,7 +42,7 @@ namespace NeuralNetwork.Network.Nodes
 
         public Node(ActivationFunction activationFunction)
         {
-            this.activationFunction = activationFunction;
+            _activationFunction = activationFunction;
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace NeuralNetwork.Network.Nodes
         /// <returns>state</returns>
         public virtual double CalculateOutput()
         {
-            Output = activationFunction(WeightFunctionParents(parentLinks));
+            Output = _activationFunction(WeightFunctionParents(_parentLinks));
             return Output;
         }
 
@@ -61,12 +61,12 @@ namespace NeuralNetwork.Network.Nodes
         /// <param name="con">TBA link</param>
         private void AddParentLink(Link con)
         {
-            parentLinks.Add(con);
+            _parentLinks.Add(con);
         }
 
         private void AddChildLink(Link con)
         {
-            childLinks.Add(con);
+            _childLinks.Add(con);
         }
 
         /// <summary>
@@ -92,20 +92,20 @@ namespace NeuralNetwork.Network.Nodes
 
         public void CalculateDelta(Func<double, double> derivative)
         {
-            delta = derivative(Output) * predelta;
+            _delta = derivative(Output) * _predelta;
         }
 
         public void CalculatePredeltaForHidden()
         {
-            predelta = childLinks.Select(link => link.ChildNode.delta * link.Weight).Sum();
+            _predelta = _childLinks.Select(link => link.ChildNode._delta * link.Weight).Sum();
         }
 
         public void ReweightRecursively(double learningCoef)
         {
             //from childs to parents
-            foreach (var link in parentLinks)
+            foreach (var link in _parentLinks)
             {
-                link.Weight -= learningCoef * link.ParentNode.Output * delta;
+                link.Weight -= learningCoef * link.ParentNode.Output * _delta;
                 link.ParentNode.ReweightRecursively(learningCoef);
             }
         }

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using NeuralNetwork.Exceptions;
-using NeuralNetwork.Network.Nodes;
+using NeuralNetwork.Networks.Nodes;
 
-namespace NeuralNetwork.Network.Layers
+namespace NeuralNetwork.Networks.Layers
 {
     public class SenseLayer : Layer
     {

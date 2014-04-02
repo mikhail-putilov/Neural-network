@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using NeuralNetwork.Network.Training;
+using NeuralNetwork.Networks;
+using NeuralNetwork.Networks.Training;
 
 namespace NeuralNetwork
 {
@@ -11,15 +12,16 @@ namespace NeuralNetwork
         private const string FileDataXOR = @"..\..\Resources\XorPrecedences.csv";
         private const string FileDataNegation = @"..\..\Resources\NegationPrecedences.csv";
         private const int MaxIterations = 1000000;
+
         private static void Main(string[] args)
         {
-//            XOR();
-            Negation();
+            XOR();
+//            Negation();
         }
 
         private static void Negation()
         {
-            Network.Network network = Network.Network.RepeaterNetwork;
+            Network network = new Negation();
             try
             {
                 ICollection<KnownPrecedent> precedents = FileManager.LoadPrecedencesFromFile(FileDataNegation);
@@ -44,7 +46,7 @@ namespace NeuralNetwork
 
         private static void XOR()
         {
-            Network.Network network = Network.Network.XORNetwork;
+            Network network = new XOR();
             try
             {
                 ICollection<KnownPrecedent> precedents = FileManager.LoadPrecedencesFromFile(FileDataXOR);

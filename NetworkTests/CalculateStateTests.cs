@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NeuralNetwork.Network.Nodes;
+using NeuralNetwork.Networks.Nodes;
 
 namespace NetworkTests
 {

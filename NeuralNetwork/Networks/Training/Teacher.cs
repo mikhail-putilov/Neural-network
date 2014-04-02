@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace NeuralNetwork.Network.Training
+namespace NeuralNetwork.Networks.Training
 {
     internal class Teacher
     {

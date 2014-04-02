@@ -1,6 +1,6 @@
-using NeuralNetwork.Network.Nodes;
+using NeuralNetwork.Networks.Nodes;
 
-namespace NeuralNetwork.Network.Etc
+namespace NeuralNetwork.Networks.Etc
 {
     internal class Link
     {

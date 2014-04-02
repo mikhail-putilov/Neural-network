@@ -1,5 +1,5 @@
 ﻿using System;
-using NeuralNetwork.Network.Nodes;
+using NeuralNetwork.Networks.Nodes;
 
 namespace NeuralNetwork.Exceptions
 {

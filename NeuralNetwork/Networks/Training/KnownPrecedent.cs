@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace NeuralNetwork.Network.Training
+namespace NeuralNetwork.Networks.Training
 {
     public struct KnownPrecedent
     {

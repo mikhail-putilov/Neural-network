@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NeuralNetwork.Network;
-using NeuralNetwork.Network.Layers;
-using NeuralNetwork.Network.Nodes;
+using NeuralNetwork.Networks;
+using NeuralNetwork.Networks.Layers;
+using NeuralNetwork.Networks.Nodes;
 
 namespace NetworkTests
 {

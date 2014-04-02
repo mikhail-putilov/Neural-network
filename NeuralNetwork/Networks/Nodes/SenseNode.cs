@@ -1,4 +1,4 @@
-﻿namespace NeuralNetwork.Network.Nodes
+﻿namespace NeuralNetwork.Networks.Nodes
 {
     public class SenseNode : Node
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using NeuralNetwork.Network.Training;
+using NeuralNetwork.Networks.Training;
 
 namespace NeuralNetwork
 {

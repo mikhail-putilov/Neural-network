@@ -41,19 +41,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Network\Etc\ActivationFunction.cs" />
-    <Compile Include="Network\Etc\Connection.cs" />
+    <Compile Include="Networks\Etc\ActivationFunction.cs" />
+    <Compile Include="Networks\Etc\Link.cs" />
     <Compile Include="FileManager.cs" />
     <Compile Include="Exceptions\InconsistentSenseLayer.cs" />
-    <Compile Include="Network\Training\KnownPrecedent.cs" />
-    <Compile Include="Network\Layers\Layer.cs" />
-    <Compile Include="Network\Network.cs" />
-    <Compile Include="Network\Nodes\Node.cs" />
+    <Compile Include="Networks\Negation.cs" />
+    <Compile Include="Networks\Training\KnownPrecedent.cs" />
+    <Compile Include="Networks\Layers\Layer.cs" />
+    <Compile Include="Networks\Network.cs" />
+    <Compile Include="Networks\Nodes\Node.cs" />
+    <Compile Include="Networks\XOR.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Network\Layers\SenseLayer.cs" />
-    <Compile Include="Network\Nodes\SenseNode.cs" />
-    <Compile Include="Network\Training\Teacher.cs" />
+    <Compile Include="Networks\Layers\SenseLayer.cs" />
+    <Compile Include="Networks\Nodes\SenseNode.cs" />
+    <Compile Include="Networks\Training\Teacher.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
