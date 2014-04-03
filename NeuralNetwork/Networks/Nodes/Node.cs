@@ -78,7 +78,7 @@ namespace NeuralNetwork.Networks.Nodes
             return links.Sum(conn => conn.Weight*conn.ParentNode.CalculateOutput());
         }
 
-        public void CalculateDelta(Func<double, double> derivative)
+        public void CalculateDelta(Derivative derivative)
         {
             _delta = derivative(Output) * _predelta;
         }

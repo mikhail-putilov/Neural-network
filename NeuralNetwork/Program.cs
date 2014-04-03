@@ -22,57 +22,64 @@ namespace NeuralNetwork
         private static void Negation()
         {
             Network network = new Negation();
+            ICollection<KnownPrecedent> precedents;
             try
             {
-                ICollection<KnownPrecedent> precedents = FileManager.LoadPrecedencesFromFile(FileDataNegation);
-                var teacher = new Teacher(network, precedents) {EpsilonTraining = 0.01};
-                teacher.Train(MaxIterations);
-                ICollection<double> result = network.Run(new[] {1.0});
-                Console.Write("1.0 negate:\t");
-                result.ToList().ForEach(d => Console.Write("{0:F} ", d));
-
-                Console.WriteLine();
-
-                ICollection<double> result2 = network.Run(new[] {0.0});
-                Console.Write("0.0 negate:\t");
-                result2.ToList().ForEach(d => Console.Write("{0:F} ", d));
-                Console.WriteLine();
+                precedents = FileManager.LoadPrecedencesFromFile(FileDataNegation);
             }
             catch (FileNotFoundException e)
             {
                 Console.WriteLine(e.Message);
+                return;
             }
+            var teacher = new Teacher(network, precedents) {EpsilonTraining = 0.01};
+            teacher.Train(MaxIterations);
+
+            //Fancy output
+            Action<double> fancyRun = input =>
+            {
+                ICollection<double> result = network.Run(new[]{input});
+                Console.Write("{0} negate :\t", input);
+                result.ToList().ForEach(d => Console.Write("{0:F} ", d));
+                Console.WriteLine();
+            };
+
+            fancyRun(1);
+            fancyRun(0);
+            fancyRun(0.5);
+            fancyRun(0.7);
+            fancyRun(0.2);
         }
 
         private static void XOR()
         {
             Network network = new XOR();
+            ICollection<KnownPrecedent> precedents;
             try
             {
-                ICollection<KnownPrecedent> precedents = FileManager.LoadPrecedencesFromFile(FileDataXOR);
-                var teacher = new Teacher(network, precedents);
-                teacher.Train(MaxIterations);
-                ICollection<double> result = network.Run(new[] {1.0, 0.0});
-                Console.Write("1.0 xor 0.0:\t");
-                result.ToList().ForEach(d => Console.Write("{0:F} ", d));
-                Console.WriteLine();
-                ICollection<double> result2 = network.Run(new[] {0.0, 1.0});
-                Console.Write("0.0 xor 1.0:\t");
-                result2.ToList().ForEach(d => Console.Write("{0:F} ", d));
-                Console.WriteLine();
-                ICollection<double> result3 = network.Run(new[] {1.0, 1.0});
-                Console.Write("1.0 xor 1.0:\t");
-                result3.ToList().ForEach(d => Console.Write("{0:F} ", d));
-                Console.WriteLine();
-                ICollection<double> result4 = network.Run(new[] {0.0, 0.0});
-                Console.Write("0.0 xor 0.0:\t");
-                result4.ToList().ForEach(d => Console.Write("{0:F} ", d));
-                Console.WriteLine();
+                precedents = FileManager.LoadPrecedencesFromFile(FileDataXOR);
             }
             catch (FileNotFoundException e)
             {
                 Console.WriteLine(e.Message);
+                return;
             }
+            var teacher = new Teacher(network, precedents);
+            teacher.Train(MaxIterations);
+
+            //Fancy output
+            Action<double[]> fancyRun = input =>
+            {
+                ICollection<double> result = network.Run(input);
+                Console.Write("{0} xor {1}:\t", input[0], input[1]);
+                result.ToList().ForEach(d => Console.Write("{0:F} ", d));
+                Console.WriteLine();
+            };
+
+            fancyRun(new[] {1.0, 0.0});
+            fancyRun(new[] {0.0, 0.0});
+            fancyRun(new[] {0.0, 1.0});
+            fancyRun(new[] {1.0, 1.0});
         }
     }
 }

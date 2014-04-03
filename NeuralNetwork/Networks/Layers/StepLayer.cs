@@ -1,7 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using NeuralNetwork.Networks.Nodes;
 using NeuralNetwork.Networks.Etc;
 
@@ -19,10 +16,10 @@ namespace NeuralNetwork.Networks.Layers
         /// </summary>
         /// <param name="size">number of nodes in layer</param>
         /// <param name="activationFunction">the function is use to produce output</param>
-        public StepLayer(int size, ActivationFunction activationFunction)
-            : base(size, activationFunction)
+        public StepLayer(int size, ActivationFunction activationFunction, Derivative derivative)
+            : base(size, activationFunction, derivative)
         {
-            Random rnd = new Random(DateTime.Now.Millisecond);
+            var rnd = new Random(DateTime.Now.Millisecond);
             foreach (var node in Nodes)
             {
                 var virtualStepInputNode = new SenseNode();

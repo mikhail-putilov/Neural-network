@@ -7,9 +7,7 @@ namespace NeuralNetwork.Networks
 {
     public class Network
     {
-        private Layer _endLayer;
-        private List<Layer> _layers = new List<Layer>();
-        private SenseLayer _senseLayer;
+        private List<Layer> hiddenLayers = new List<Layer>();
 
         protected Network()
         {
@@ -17,28 +15,20 @@ namespace NeuralNetwork.Networks
 
         public Network(SenseLayer senseLayer, params Layer[] layers)
         {
-            _senseLayer = senseLayer;
-            _layers = layers.Take(layers.Length - 1).ToList();
+            SenseLayer = senseLayer;
+            hiddenLayers = layers.Take(layers.Length - 1).ToList();
             EndLayer = layers.Last();
         }
 
-        protected SenseLayer SenseLayer
+        protected SenseLayer SenseLayer { get; set; }
+
+        protected List<Layer> HiddenLayers
         {
-            get { return _senseLayer; }
-            set { _senseLayer = value; }
+            get { return hiddenLayers; }
+            set { hiddenLayers = value; }
         }
 
-        protected List<Layer> Layers
-        {
-            get { return _layers; }
-            set { _layers = value; }
-        }
-
-        protected Layer EndLayer
-        {
-            get { return _endLayer; }
-            set { _endLayer = value; }
-        }
+        protected Layer EndLayer { get; set; }
 
         public ICollection<double> Run(ICollection<double> objectFeatures)
         {
@@ -49,16 +39,17 @@ namespace NeuralNetwork.Networks
         /// <summary>
         /// Standard rule is back propagation. May be overwritten
         /// </summary>
-        /// <param name="error">Difference between actual and expected output of the network</param>
+        /// <param name="actual"></param>
+        /// <param name="expected"></param>
         /// <param name="learningCoef">learning coefficient, usually small number less than 1</param>
         public virtual void Reweight(ICollection<double> actual, ICollection<double> expected, double learningCoef)
         {
             List<double> error = CalculateError(actual, expected);
 
             EndLayer.SetDeltaForEndLayer(error);
-            for (int i = Layers.Count - 1; i >= 0; i--)
+            for (int i = HiddenLayers.Count - 1; i >= 0; i--)
             {
-                Layer layer = Layers[i];
+                Layer layer = HiddenLayers[i];
                 layer.CalculateDelta();
             }
 

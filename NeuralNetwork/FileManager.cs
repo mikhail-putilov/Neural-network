@@ -45,7 +45,7 @@ namespace NeuralNetwork
                         .Select(Convert.ToDouble)
                         .ToList();
                     
-                    precedences.Add(new KnownPrecedent{ObjectFeatures = features, SupervisorySignal = outputSignal});
+                    precedences.Add(new KnownPrecedent{Features = features, SupervisorySignal = outputSignal});
                 }
             }
             return precedences;
