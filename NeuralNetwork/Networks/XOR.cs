@@ -9,11 +9,11 @@ namespace NeuralNetwork.Networks
         {
             SenseLayer = new SenseLayer(2);
 
-            var mainLayer = new Layer(4, net => 1.0/(1 + Math.Exp(-net)));
+            var mainLayer = new StepLayer(4, net => 1.0/(1 + Math.Exp(-net)));
             mainLayer.FullConnectionWith(SenseLayer);
             Layers.Add(mainLayer);
 
-            EndLayer = new Layer(1, net => 1.0/(1 + Math.Exp(-net)));
+            EndLayer = new StepLayer(1, net => 1.0/(1 + Math.Exp(-net)));
             EndLayer.FullConnectionWith(mainLayer);
         }
     }
