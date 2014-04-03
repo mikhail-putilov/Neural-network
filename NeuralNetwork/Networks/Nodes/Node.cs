@@ -8,15 +8,15 @@ namespace NeuralNetwork.Networks.Nodes
     public class Node
     {
         private readonly ActivationFunction _activationFunction;
-        private readonly List<Link> _parentLinks = new List<Link>();
-        private readonly List<Link> _childLinks = new List<Link>();
+        public List<Link> ParentLinks { get; private set; }
+        public List<Link> ChildLinks { get; private set; }
 
         protected double Output;
         
         private double _delta;
 
         private double _predelta;
-
+        
         /// <summary>
         /// For output layer: Predelta = (expected_output - Output)
         /// For hidden layers: Predelta = sum for all childs (child.Delta * link.Weight )
@@ -42,6 +42,8 @@ namespace NeuralNetwork.Networks.Nodes
 
         public Node(ActivationFunction activationFunction)
         {
+            ParentLinks = new List<Link>();
+            ChildLinks = new List<Link>();
             _activationFunction = activationFunction;
         }
 
@@ -51,22 +53,8 @@ namespace NeuralNetwork.Networks.Nodes
         /// <returns>state</returns>
         public virtual double CalculateOutput()
         {
-            Output = _activationFunction(WeightFunctionParents(_parentLinks));
+            Output = _activationFunction(WeightFunctionParents(ParentLinks));
             return Output;
-        }
-
-        /// <summary>
-        /// Add link (link to inputNode node)
-        /// </summary>
-        /// <param name="con">TBA link</param>
-        private void AddParentLink(Link con)
-        {
-            _parentLinks.Add(con);
-        }
-
-        private void AddChildLink(Link con)
-        {
-            _childLinks.Add(con);
         }
 
         /// <summary>
@@ -78,8 +66,8 @@ namespace NeuralNetwork.Networks.Nodes
         public static void Connect(Node parentNode, Node childNode, double weight)
         {
             var link = new Link(parentNode, childNode, weight);
-            childNode.AddParentLink(link); //в inLinks надо смотреть на parentnode
-            parentNode.AddChildLink(link); //в outLinks надо смотроеть на childnode
+            childNode.ParentLinks.Add(link); 
+            parentNode.ChildLinks.Add(link);
         }
 
         /// <summary>
@@ -97,13 +85,13 @@ namespace NeuralNetwork.Networks.Nodes
 
         public void CalculatePredeltaForHidden()
         {
-            _predelta = _childLinks.Select(link => link.ChildNode._delta * link.Weight).Sum();
+            _predelta = ChildLinks.Select(link => link.ChildNode._delta * link.Weight).Sum();
         }
 
         public void ReweightRecursively(double learningCoef)
         {
             //from childs to parents
-            foreach (var link in _parentLinks)
+            foreach (var link in ParentLinks)
             {
                 link.Weight -= learningCoef * link.ParentNode.Output * _delta;
                 link.ParentNode.ReweightRecursively(learningCoef);

@@ -2,7 +2,7 @@ using NeuralNetwork.Networks.Nodes;
 
 namespace NeuralNetwork.Networks.Etc
 {
-    internal class Link
+    public class Link
     {
         public Link(Node parentNode, Node childNode, double weight)
         {
